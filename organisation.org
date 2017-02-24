@@ -1,0 +1,6 @@
+* Zhale
+** Ideas
+***
+** TODOS
+*** TODO Create Git repository
+*** TODO Create Basic Build Script for Hello World
