@@ -1,6 +1,25 @@
 * Zhale
 ** Ideas
-***
+*** Game Type: Platformer
+*** Incorporates ideas requiring great precision and logical reasoning.
+*** Deeper meaning.
+*** Themes:
+    - Great unknown, hiding in the deep.
+    - Elements of fear.
+*** Gameplay.
+    - Open world.
+    - Objective:
+      - Survive(Crafting mechanics).
+      -
+    - Static levels that show more with each player expedition.
+*** 8 bit graphics.
 ** TODOS
-*** TODO Create Git repository
-*** TODO Create Basic Build Script for Hello World
+*** DONE Create Git repository
+    CLOSED: [2017-02-24 Fri 15:26]
+*** TODO Create Basic Build Script for Hello World.
+*** TODO Initialize SFML show basic window.
+*** TODO Handle events in special constructs.
+*** TODO Stabilize FPS (vsync).
+*** TODO Design level abstraction with player being able to move level up or leveldown (ladder and staircases).
+*** TODO Collision Detection (Extra Awesome Stable).
+*** TODO Bind script language.
