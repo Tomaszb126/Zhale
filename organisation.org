@@ -16,10 +16,15 @@
 ** TODOS
 *** DONE Create Git repository
     CLOSED: [2017-02-24 Fri 15:26]
-*** TODO Create Basic Build Script for Hello World.
-*** TODO Initialize SFML show basic window.
-*** TODO Handle events in special constructs.
-*** TODO Stabilize FPS (vsync).
+*** DONE Create Basic Build Script for Hello World.
+    CLOSED: [2017-02-25 Sat 14:20]
+*** DONE Initialize SFML show basic window.
+    CLOSED: [2017-02-25 Sat 14:20]
+*** DONE Handle events in special constructs.
+    CLOSED: [2017-02-25 Sat 14:30]
+*** DONE Stabilize FPS (vsync).
+    CLOSED: [2017-02-25 Sat 14:32]
 *** TODO Design level abstraction with player being able to move level up or leveldown (ladder and staircases).
+    - [ ] Basic Map Design.
 *** TODO Collision Detection (Extra Awesome Stable).
 *** TODO Bind script language.
