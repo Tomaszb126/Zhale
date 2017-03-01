@@ -25,12 +25,18 @@
 *** DONE Stabilize FPS (vsync).
     CLOSED: [2017-02-25 Sat 14:32]
 *** TODO Add Proper Logging.
-*** TODO Design level abstraction with player being able to move level up or leveldown (ladder and staircases). [4/5]
+*** TODO Design level abstraction with player being able to move level up or leveldown (ladder and staircases). [8/11]
     - [X] Implement Basic Level Loading.
     - [X] Basic Map Design.
     - [X] Allow camera movement.
     - [X] Add Layered Rendering.
-    - [ ] Center The Camera
+    - [X] Center The Camera.
+    - [X] Add Scallling.
+    - [X] Fix the layered rendering.
+    - [X] Create Player.
+    - [ ] Create Basic Collision detection.
+    - [ ] Center Camera Scalling
+    - [ ] Add Fps Stuff.
 
 *** TODO Collision Detection (Extra Awesome Stable).
 *** TODO Bind script language.

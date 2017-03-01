@@ -89,14 +89,15 @@ public:
     return tileMap2D;
   }
 
-  void render(sf::RenderWindow& renderWindow, sf::Vector3f cameraPosition) {
-    const real32 tileSize = 32.0f;
-    // uint16 cameraZ = (uint16)cameraPosition.z;
-    // uint32 startZ = std::min((uint32)tileMap3D.size()-1, (uint32)cameraZ);
+  void render(sf::RenderWindow& renderWindow, real32 tileSize, sf::Vector3f cameraPosition) {
+
+    sf::Vector2u screenResolution  = renderWindow.getSize();
+    sf::Vector2f resolutionInTiles = sf::Vector2f((real32)screenResolution.x / tileSize, (real32)screenResolution.y / tileSize);
+    sf::Vector2f halfResInTiles    = sf::Vector2f(resolutionInTiles.x / 2.0f, resolutionInTiles.y / 2.0f);
 
     int32 startZ = std::max((int32)tileMap3D.size()-1, (int32)0);
 
-    for(int32 z = startZ; z >= 0; --z)
+    for(int32 z = startZ; z >= (int32)cameraPosition.z; --z)
     {
       const TileMap2D& tileMap2D = tileMap3D[z];
       uint32 mapHeight = (uint32)tileMap2D.size();
@@ -109,7 +110,9 @@ public:
 	    TILE_TYPE tileType = tileMap2D[y][x];
 	    if(tileType == TT_VOID) continue;
 
-	    sf::Vector2f position((x - cameraPosition.x) * tileSize, (y - cameraPosition.y) * tileSize);
+	    sf::Vector2f position((x - cameraPosition.x - halfResInTiles.x) * tileSize,
+				  (y - cameraPosition.y - halfResInTiles.y) * tileSize);
+
 	    sf::RectangleShape rs(sf::Vector2f(tileSize, tileSize));
 	    rs.setPosition(position);
 	    switch(tileType)
@@ -133,22 +136,80 @@ public:
       } else {std::cout << "Map is not properly loaded height is equal to 0\n"; }
     }
   }
+
+  TILE_TYPE getTile(const sf::Vector3f position) const
+  {
+    if(tileMap3D.size() > position.z && tileMap3D[(uint32)position.y-1].size() > position.y &&
+       tileMap3D[(uint32)position.x-1].size() > position.x)
+    {
+      return tileMap3D[(uint32)position.z][(uint32)position.y][(uint32)position.x];
+    }
+    return TT_WALL;
+  }
+
+  bool doesIntersectWithSolid(const sf::FloatRect& rect, uint32 level) const
+  {
+    if(getTile(sf::Vector3f(rect.left, rect.top, (real32)level)) == TT_WALL ||
+       getTile(sf::Vector3f(rect.left + rect.width, rect.top, (real32)level)) == TT_WALL ||
+       getTile(sf::Vector3f(rect.left + rect.width, rect.top + rect.height, (real32)level)) == TT_WALL) return true;
+
+    return false;
+  }
+};
+
+class Player {
+public:
+  sf::Vector3f position;
+  sf::Vector2f dimensions;
+  const float movementSpeed = 0.5f;
+
+  void move(const Input& input, const Level& level)
+  {
+    sf::Vector3f newPosition = position;;
+
+    if(input.keysDown[sf::Keyboard::W]) newPosition.y -= movementSpeed;
+    if(input.keysDown[sf::Keyboard::S]) newPosition.y += movementSpeed;
+
+    if(input.keysDown[sf::Keyboard::A]) newPosition.x -= movementSpeed;
+    if(input.keysDown[sf::Keyboard::D]) newPosition.x += movementSpeed;
+
+    sf::FloatRect playerRect(position.x - dimensions.x/2.0f, position.x - dimensions.x/2.0f,
+			     dimensions.x, dimensions.y);
+
+    if(!level.doesIntersectWithSolid(playerRect, (uint32)position.z)) position = newPosition;
+    else std::cout << "Collision \n ";
+  }
+
+  void render(sf::RenderWindow& renderWindow, real32 tileSize)
+  {
+    sf::RectangleShape rs(sf::Vector2f(dimensions.x * tileSize, dimensions.y * tileSize));
+    rs.setPosition(sf::Vector2f(position.x * tileSize, position.y * tileSize));
+    rs.setFillColor(sf::Color::Magenta);
+    renderWindow.draw(rs);
+  }
 };
 
 int main()
 {
-  sf::RenderWindow window(sf::VideoMode(1280, 720), "Zhale");
+  sf::Vector2u resolution(1280, 720);
+
+  sf::RenderWindow window(sf::VideoMode(resolution.x, resolution.y), "Zhale");
   window.setVerticalSyncEnabled(true);
   window.setPosition(sf::Vector2i(0,0));
 
   Input input;
   Level level;
+  Player player;
+  player.position   = sf::Vector3f(2.0f, 2.0f, 0);
+  player.dimensions = sf::Vector2f(1.0f, 1.0f);
   if(!level.loadFromFile("../maps/test", 3))
   {
     std::cout << "Level couldn't be loaded \n";
   };
 
-  sf::Vector3f cameraPosition;
+  // Centering the camera
+  float tileSize = 32.0f;
+  sf::Vector3f cameraPosition(-(real32)resolution.x / tileSize / 2.0f, - (real32)resolution.y / tileSize / 2.0f, 0);
   real32 movementSpeed = 1.0f;
 
   while (window.isOpen())
@@ -174,14 +235,19 @@ int main()
 
     if(input.keysPressed[sf::Keyboard::Q]) window.close();
 
-    if(input.keysDown[sf::Keyboard::W]) cameraPosition.y -= movementSpeed;
-    if(input.keysDown[sf::Keyboard::S]) cameraPosition.y += movementSpeed;
+    // if(input.keysDown[sf::Keyboard::W]) cameraPosition.y -= movementSpeed;
+    // if(input.keysDown[sf::Keyboard::S]) cameraPosition.y += movementSpeed;
 
-    if(input.keysDown[sf::Keyboard::A]) cameraPosition.x -= movementSpeed;
-    if(input.keysDown[sf::Keyboard::D]) cameraPosition.x += movementSpeed;
+    // if(input.keysDown[sf::Keyboard::A]) cameraPosition.x -= movementSpeed;
+    // if(input.keysDown[sf::Keyboard::D]) cameraPosition.x += movementSpeed;
+
+    if(input.keysDown[sf::Keyboard::Add])      tileSize += movementSpeed / 4.0f;
+    if(input.keysDown[sf::Keyboard::Subtract]) tileSize -= movementSpeed / 4.0f;
 
     window.clear(sf::Color::Yellow);
-    level.render(window, cameraPosition);
+    level.render(window, tileSize, cameraPosition);
+    player.move(input, level);
+    player.render(window, tileSize);
     window.display();
   }
 
