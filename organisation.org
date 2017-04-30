@@ -24,8 +24,9 @@
     CLOSED: [2017-02-25 Sat 14:30]
 *** DONE Stabilize FPS (vsync).
     CLOSED: [2017-02-25 Sat 14:32]
+*** TODO Fix the bug with rendering.
 *** TODO Add Proper Logging.
-*** TODO Design level abstraction with player being able to move level up or leveldown (ladder and staircases). [8/11]
+*** TODO Design level abstraction with player being able to move level up or leveldown (ladder and staircases). [10/12]
     - [X] Implement Basic Level Loading.
     - [X] Basic Map Design.
     - [X] Allow camera movement.
@@ -34,7 +35,8 @@
     - [X] Add Scallling.
     - [X] Fix the layered rendering.
     - [X] Create Player.
-    - [ ] Create Basic Collision detection.
+    - [X] Create Basic Collision detection.
+    - [X] Fix Basic Collision detection.
     - [ ] Center Camera Scalling
     - [ ] Add Fps Stuff.
 
